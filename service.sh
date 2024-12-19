@@ -11,7 +11,7 @@ help() {
     echo "  play         - Inicia todos os containers parados."
     echo "  stop         - Pausa todos os containers."
     echo "  remove       - Apaga todos os containers e imagens."
-    echo "  <dns|proxy|asa-server|asa-server2> restart - Reinicia o container específico."
+    echo "  <dns|proxy|server1|server2> restart - Reinicia o container específico."
 }
 
 start_compose() {
@@ -61,7 +61,7 @@ case $SERVICE in
     remove)
         remove_containers
         ;;
-    dns|proxy|asa-server|asa-server2)
+    dns|proxy|server1|server2)
         if [ "$ACTION" == "restart" ]; then
             restart_container
         else
