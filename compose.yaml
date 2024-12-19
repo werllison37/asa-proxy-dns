@@ -15,28 +15,25 @@ services:
     container_name: proxy
     ports:
       - "80:80/tcp"
-    depends_on:
-      - asa-server
     networks:
       - asa-network
 
-  asa-server:
+  servidor1:
     build: 
-      context: ./asa-server
+      context: ./server1
       dockerfile: Dockerfile
-    container_name: asa-server
+    container_name: server1
     networks:
       - asa-network
 
-  asa-server2:
+  servidor2:
     build: 
-      context: ./asa-server
+      context: ./server2
       dockerfile: Dockerfile
-    container_name: asa-server2
+    container_name: server2
     networks:
       - asa-network
 
-#Docker Networks
 networks:
   asa-network:
     driver: bridge

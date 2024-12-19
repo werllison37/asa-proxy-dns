@@ -2,74 +2,75 @@
 
 SERVICE=$1
 ACTION=$2
-SDNS="dns"
-SWEB="web"
-DDNS="./dns"
-DWEB="./nginx"
 
 help() {
-    echo "Como utilizar: ./service.sh <dns|web> <comando>"
+    echo "Como utilizar: ./service.sh <comando>"
     echo "Comandos disponíveis:"
-    echo "  build    - Construir a imagem do serviço."
-    echo "  start    - Criar ou iniciar o container do serviço."
-    echo "  stop     - Parar o container do serviço."
-    echo "  restart  - Reiniciar o container do serviço."
-    echo "  remove   - Remover o container e a imagem do serviço."
-    echo "  logs     - Verificar os logs do container."
-    echo "  help     - Lista todos os comandos disponíveis."
+    echo "  help         - Exibe esta mensagem de ajuda."
+    echo "  start        - Executa o Docker Compose para criar e inicializar os containers."
+    echo "  play         - Inicia todos os containers parados."
+    echo "  stop         - Pausa todos os containers."
+    echo "  remove       - Apaga todos os containers e imagens."
+    echo "  <dns|proxy|asa-server|asa-server2> restart - Reinicia o container específico."
 }
 
-if [ $# -ne 2 ] && [ "$ACTION" != "help" ]; then
+start_compose() {
+    echo "Iniciando containers com Docker Compose..."
+    docker-compose up -d
+}
+
+play_containers() {
+    echo "Iniciando todos os containers pausados..."
+    docker-compose unpause
+}
+
+stop_containers() {
+    echo "Pausando todos os containers..."
+    docker-compose pause
+}
+
+remove_containers() {
+    echo "Removendo todos os containers e imagens..."
+    docker-compose down --rmi all --volumes --remove-orphans
+}
+
+restart_container() {
+    if [ -z "$SERVICE" ]; then
+        echo "Erro: informe o nome do container para reiniciar (dns, proxy, asa-server, asa-server2)."
+        exit 1
+    fi
+    echo "Reiniciando o container $SERVICE..."
+    docker restart $SERVICE
+}
+
+if [ "$SERVICE" == "help" ]; then
     help
-    exit 1
+    exit 0
 fi
 
-case $ACTION in
-    build)
-        echo "Construindo a imagem $SERVICE..."
-        if [ "$SERVICE" == "$SDNS" ]; then
-            docker build -t $SDNS $DDNS
-        elif [ "$SERVICE" == "$SWEB" ]; then
-            docker build -t $SWEB $DWEB
-        else
-            echo "Serviço inválido: $SERVICE"
-            exit 1
-        fi
-        ;;
+case $SERVICE in
     start)
-        echo "Iniciando o container $SERVICE..."
-        if [ "$SERVICE" == "$SDNS" ]; then
-            docker start $SDNS 2>/dev/null || docker run -d --name $SDNS -p 53:53/udp -p 53:53/tcp $SDNS
-        elif [ "$SERVICE" == "$SWEB" ]; then
-            docker start $SWEB 2>/dev/null || docker run -d --name $SWEB -p 80:80 $SWEB
-        else
-            echo "Serviço inválido: $SERVICE"
-            exit 1
-        fi
+        start_compose
+        ;;
+    play)
+        play_containers
         ;;
     stop)
-        echo "Parando o container $SERVICE..."
-        docker stop $SERVICE 2>/dev/null
-        ;;
-    restart)
-        echo "Reiniciando o container $SERVICE..."
-        $0 $SERVICE stop
-        $0 $SERVICE start
+        stop_containers
         ;;
     remove)
-        echo "Removendo o container e a imagem $SERVICE..."
-        docker rm -f $SERVICE 2>/dev/null
-        docker rmi -f $SERVICE 2>/dev/null
+        remove_containers
         ;;
-    logs)
-        echo "Exibindo os logs do container $SERVICE..."
-        docker logs $SERVICE
-        ;;
-    help)
-        help
+    dns|proxy|asa-server|asa-server2)
+        if [ "$ACTION" == "restart" ]; then
+            restart_container
+        else
+            echo "Erro: Ação inválida. Use 'restart' após o nome do container."
+            exit 1
+        fi
         ;;
     *)
-        echo "Ação inválida: $ACTION. Use build, start, stop, restart, remove, logs ou help."
+        echo "Comando inválido. Use 'help' para mais informações."
         exit 1
         ;;
 esac
