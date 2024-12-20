@@ -9,7 +9,7 @@
 ## Sobre o projeto
 Projeto desenvolvido utilizando a plataforma Docker, no qual foram criados 4 containers: Um para o servidor DNS, Um para o Proxy Reverso e outros dois para os servidores web. 
   
-Dentro do repositório, estão presentes os arquivos de configuração para ambos os containers, além de um shell script que automatiza algumas tarefas por meio do terminal, como iniciar ou parar os containers.  
+Dentro do repositório, estão presentes os arquivos de configuração para todos os containers, além de um shell script que automatiza algumas tarefas por meio do terminal, como iniciar ou parar os containers.  
 
 ## DNS
 Dentro da pasta dns, serão encontrados os seguintes arquivos:  
