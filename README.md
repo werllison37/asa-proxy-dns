@@ -1,8 +1,8 @@
-# Projeto da disciplina Administração de Sistemas Abertos
+# Projeto Nº 2 da disciplina Administração de Sistemas Abertos
 
 ## Orientações
-* Implementar o estrutura web com 01 proxy reverso e 02 servidores de aplicação.
-* Implementar o estrutura com 01 servidor de DNS primário com zona de resolução direta.
+* Implementar uma estrutura web com 01 proxy reverso e 02 servidores de aplicação.
+* Implementar a estrutura com 01 servidor de DNS primário com zona de resolução direta.
 * Script de automatização de criação, exclusão, início e parada dos serviços.
 * Domínios de DNS composto pelo primeiro nome do aluno + .asa.br (Ex.: edmar.asa.br).
 
